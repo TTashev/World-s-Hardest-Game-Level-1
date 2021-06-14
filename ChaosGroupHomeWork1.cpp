@@ -1,6 +1,7 @@
 #include <iostream>
 #include <windows.h>
 #include <thread>
+#include <chrono>
 #include <unistd.h>
 #include "HardestGame.h"
 
@@ -39,27 +40,30 @@ void clearScreen()
 	SetConsoleCursorPosition(hOut, Position);
 }
 
-void moveEnemy(int startP, int endP)
+void moveEnemy(int startPos, int endPos)
 {
+    std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
 start:
-    if(level[endP] == 'O')
+    if(level[endPos] == 'O')
     {
-        for(int j = endP - 1; j >= startP; j--)
+        for(int j = endPos - 1; j >= startPos; j--)
         {
             level[j] = 'O';
             level[j + 1] = '.';
 
-            usleep(20000);
+            t += std::chrono::milliseconds(33);
+            std::this_thread::sleep_until(t);
         }
     }
-    else if(level[startP] == 'O')
+    else if(level[startPos] == 'O')
     {
-        for(int i = startP + 1; i < endP + 1; i++)
+        for(int i = startPos + 1; i < endPos + 1; i++)
         {
             level[i] = 'O';
             level[i - 1] = '.';
 
-            usleep(20000);
+            t += std::chrono::milliseconds(33);
+            std::this_thread::sleep_until(t);
         }
     }
     goto start;
@@ -68,6 +72,8 @@ start:
 void movePlayer(int moveIndex)
 {
     static int playerStartPos = 249;
+
+    std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
 
     // check for the next move if it is a wall
     if(moveIndex == 1 && level[playerStartPos + 1] == '#') return;
@@ -91,7 +97,7 @@ void movePlayer(int moveIndex)
     if(moveIndex == 2)
     {
         // left movement
-        playerStartPos -= 1;
+        playerStartPos--;
     }
     if(moveIndex == 3)
     {
@@ -105,7 +111,9 @@ void movePlayer(int moveIndex)
     }
 
     level[playerStartPos] = 's';
-    usleep(50000);
+
+    t += std::chrono::milliseconds(33);
+    std::this_thread::sleep_until(t);
 }
 
 void run()
