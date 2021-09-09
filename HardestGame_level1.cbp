@@ -33,8 +33,8 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="Bots.h" />
-		<Unit filename="ChaosGroupHomeWork1.cpp" />
 		<Unit filename="HardestGame.h" />
+		<Unit filename="HardestGame_level1.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
