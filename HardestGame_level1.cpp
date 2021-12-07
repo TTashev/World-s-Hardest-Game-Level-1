@@ -144,6 +144,7 @@ void movePlayer(int moveIndex)
 
     level[playerCurrentPos] = 's';
 
+
     // 30 FPS
     t += std::chrono::milliseconds(33);
     std::this_thread::sleep_until(t);
