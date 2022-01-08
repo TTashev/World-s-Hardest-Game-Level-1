@@ -1,25 +1,14 @@
 #include <iostream>
 #include <thread>
+#include <vector>
 #include <mutex>
-#include <chrono>
 #include <unistd.h>
+
+#include "Bots.h"
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
-
-static const int rowSize = 49;
-static const int playerInitialPos = 249;
-
-static int playerCurrentPos = playerInitialPos;
-
-enum E_DIRECTIONS
-{
-    LEFT = 1,
-    RIGHT,
-    DOWN,
-    UP,
-};
 
 std::string level =
 ".................................###############\n"
@@ -102,54 +91,6 @@ void moveEnemy(int startPos, int endPos)
     }
 }
 
-void movePlayer(int moveIndex)
-{
-
-    std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
-
-    // check for the next move if it is a wall
-    if(moveIndex == E_DIRECTIONS::LEFT && level[playerCurrentPos - 1] == '#') return;
-    if(moveIndex == E_DIRECTIONS::RIGHT && level[playerCurrentPos + 1] == '#') return;
-    if(moveIndex == E_DIRECTIONS::DOWN && level[playerCurrentPos + rowSize] == '#') return;
-    if(moveIndex == E_DIRECTIONS::UP && level[playerCurrentPos - rowSize] == '#') return;
-
-    // reset player if hit by an enemy
-    if(moveIndex == E_DIRECTIONS::LEFT && level[playerCurrentPos - 1] == 'O') {playerCurrentPos = playerInitialPos; return;}
-    if(moveIndex == E_DIRECTIONS::RIGHT && level[playerCurrentPos + 1] == 'O') {playerCurrentPos = playerInitialPos; return;}
-    if(moveIndex == E_DIRECTIONS::DOWN && level[playerCurrentPos + rowSize] == 'O') {playerCurrentPos = playerInitialPos; return;}
-    if(moveIndex == E_DIRECTIONS::UP && level[playerCurrentPos - rowSize] == 'O') {playerCurrentPos = playerInitialPos; return;}
-
-    // reset the current player position before we move him to the next position
-    level[playerCurrentPos] = '.';
-    if(moveIndex == E_DIRECTIONS::LEFT)
-    {
-        // left movement
-        playerCurrentPos--;
-    }
-    if(moveIndex == E_DIRECTIONS::RIGHT)
-    {
-        // right movement
-        playerCurrentPos++;
-    }
-    if(moveIndex == E_DIRECTIONS::DOWN)
-    {
-        // down movement
-        playerCurrentPos += rowSize;
-    }
-    if(moveIndex == E_DIRECTIONS::UP)
-    {
-        // up movement
-        playerCurrentPos -= rowSize;
-    }
-
-    level[playerCurrentPos] = 's';
-
-
-    // 30 FPS
-    t += std::chrono::milliseconds(33);
-    std::this_thread::sleep_until(t);
-}
-
 void findExit(int prevMoveIndex, int moveIndex)
 {
     if(level[moveIndex] == '#' || level[moveIndex] == 'e' || level[moveIndex] == 'O' || visited[moveIndex] == 's')
@@ -182,15 +123,29 @@ void run()
     std::thread simulateEnemy5 ( moveEnemy, 355, 378 );
 
     //std::thread simulatePlayer (findExit, playerInitialPos, playerInitialPos + (rand() % 4 + 1));
+    std::vector<Bot> bots;
+    std::thread t[10];
+    for(int bot = 0; bot < 10; bot++)
+    {
+        bots.push_back(Bot());
+    }
 
     while(true)
     {
+        std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
         // update the screen
         std::cout << level << std::endl;
         clearScreen();
 
-        // generate player moves
-        int generateMove = rand() % 4 + 1;
-        movePlayer(generateMove);
+        for(int i = 0; i < 10; i++)
+        {
+            // generate player moves
+            int generateMove = rand() % 4 + 1;
+            // move the player position
+            bots[i].movePlayer(level, generateMove);
+        }
+
+        t += std::chrono::milliseconds(33);
+        std::this_thread::sleep_until(t);
     }
 }

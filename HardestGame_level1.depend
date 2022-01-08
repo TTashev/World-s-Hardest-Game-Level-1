@@ -10,7 +10,9 @@
 1575579927 c:\users\redeemer\documents\c++ programming\chaosgrouphomework1\hardestgame.h
 	<vector>
 
-1575831845 c:\users\redeemer\documents\c++ programming\chaosgrouphomework1\bots.h
+1639334824 c:\users\redeemer\documents\c++ programming\chaosgrouphomework1\bots.h
+	<string>
+	<chrono>
 
 1628342220 source:c:\users\redeemer\documents\c++ programming\chaosgrouphomework1\chaosgrouphomework1.cpp
 	<iostream>
@@ -20,11 +22,16 @@
 	<unistd.h>
 	<windows.h>
 
-1628338620 source:c:\users\redeemer\documents\c++ programming\chaosgrouphomework1\hardestgame_level1.cpp
+1639337689 source:c:\users\redeemer\documents\c++ programming\chaosgrouphomework1\hardestgame_level1.cpp
 	<iostream>
 	<thread>
+	<vector>
 	<mutex>
-	<chrono>
 	<unistd.h>
+	"Bots.h"
 	<windows.h>
+
+1639334563 source:c:\users\redeemer\documents\c++ programming\chaosgrouphomework1\bots.cpp
+	"Bots.h"
+	<thread>
 

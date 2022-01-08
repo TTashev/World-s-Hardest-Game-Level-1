@@ -32,6 +32,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Bots.cpp" />
 		<Unit filename="Bots.h" />
 		<Unit filename="HardestGame.h" />
 		<Unit filename="HardestGame_level1.cpp" />
