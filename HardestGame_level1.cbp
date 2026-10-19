@@ -30,12 +30,19 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++17" />
+			<Add option="-pthread" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add option="-pthread" />
+		</Linker>
 		<Unit filename="Bots.cpp" />
 		<Unit filename="Bots.h" />
 		<Unit filename="HardestGame.h" />
 		<Unit filename="HardestGame_level1.cpp" />
+		<Unit filename="QLearning.cpp" />
+		<Unit filename="QLearning.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

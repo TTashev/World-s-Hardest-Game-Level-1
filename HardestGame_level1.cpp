@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "Bots.h"
+#include "QLearning.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -115,37 +116,39 @@ void findExit(int prevMoveIndex, int moveIndex)
 
 void run()
 {
-    // spawn enemy movements on different threads
-    std::thread simulateEnemy1 ( moveEnemy, 159, 182 );
-    std::thread simulateEnemy2 ( moveEnemy, 208, 231 );
-    std::thread simulateEnemy3 ( moveEnemy, 257, 280 );
-    std::thread simulateEnemy4 ( moveEnemy, 306, 329 );
-    std::thread simulateEnemy5 ( moveEnemy, 355, 378 );
+    // train a Q-learning agent on a deterministic simulation of the level
+    Environment env(level);
+    QLearningAgent::Params params;
+    QLearningAgent agent(env.stateCount(), params);
 
-    //std::thread simulatePlayer (findExit, playerInitialPos, playerInitialPos + (rand() % 4 + 1));
-    std::vector<Bot> bots;
-    std::thread t[10];
-    for(int bot = 0; bot < 10; bot++)
-    {
-        bots.push_back(Bot());
-    }
+    std::cout << "Training Q-learning agent..." << std::endl;
+    agent.train(env);
 
+    bool reachedExit = false;
+    std::vector<int> actions = agent.greedyRollout(env, reachedExit);
+    std::cout << (reachedExit ? "Learned a path to the exit in " : "Agent did not reach the exit, best attempt: ")
+              << actions.size() << " steps" << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    // replay the learned policy at 30 fps
     while(true)
     {
-        std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
-        // update the screen
-        std::cout << level << std::endl;
-        clearScreen();
-
-        for(int i = 0; i < 10; i++)
+        env.reset();
+        for(size_t i = 0; i <= actions.size(); i++)
         {
-            // generate player moves
-            int generateMove = rand() % 4 + 1;
-            // move the player position
-            bots[i].movePlayer(level, generateMove);
-        }
+            std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
 
-        t += std::chrono::milliseconds(33);
-        std::this_thread::sleep_until(t);
+            clearScreen();
+            std::cout << env.render() << "step " << env.stepCount() << "/" << actions.size() << std::endl;
+
+            if(i < actions.size())
+            {
+                env.step(actions[i]);
+            }
+
+            t += std::chrono::milliseconds(33);
+            std::this_thread::sleep_until(t);
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
