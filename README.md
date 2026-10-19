@@ -13,9 +13,24 @@ The player is controlled by a tabular Q-learning agent (`QLearning.h` / `QLearni
 
 On start the agent trains for 20000 episodes (about a second), prints its progress, then replays the learned path in the console at 30 fps.
 
-Build on Linux:
+### Build on Linux
 
 ```
 g++ -std=c++17 -O2 -pthread HardestGame_level1.cpp Bots.cpp QLearning.cpp -o HardestGame
 ./HardestGame
+```
+
+### Build on Windows
+
+- **Code::Blocks**: open `HardestGame_level1.cbp`, then Build -> Rebuild and Run. It needs a MinGW-w64 toolchain that uses *posix* threads (otherwise `std::thread` won't compile). The MinGW that comes with the Code::Blocks "mingw-setup" installer works.
+- **MinGW from the command line** (e.g. MSYS2 `pacman -S mingw-w64-ucrt-x86_64-gcc`):
+
+```
+g++ -std=c++17 -O2 -pthread HardestGame_level1.cpp Bots.cpp QLearning.cpp -static -o HardestGame.exe
+HardestGame.exe
+```
+- **Visual Studio**: in a Developer Command Prompt:
+
+```
+cl /std:c++17 /EHsc /O2 HardestGame_level1.cpp Bots.cpp QLearning.cpp /Fe:HardestGame.exe
 ```

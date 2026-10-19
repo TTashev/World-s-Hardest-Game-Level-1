@@ -1,8 +1,8 @@
+#include <cstdlib>
 #include <iostream>
 #include <thread>
 #include <vector>
 #include <mutex>
-#include <unistd.h>
 
 #include "Bots.h"
 #include "QLearning.h"
@@ -129,6 +129,11 @@ void run()
     std::cout << (reachedExit ? "Learned a path to the exit in " : "Agent did not reach the exit, best attempt: ")
               << actions.size() << " steps" << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(2));
+
+#ifdef _WIN32
+    // clearScreen() only moves the cursor on Windows, so wipe the training log once
+    system("cls");
+#endif
 
     // replay the learned policy at 30 fps
     while(true)
